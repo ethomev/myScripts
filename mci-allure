@@ -10,8 +10,6 @@ I'm lazy and don't like typing the same group of commands repeatedly so I wrote 
 TODO:
 Run the script through pyton static analysis checks.
 Run the 'allure report open' command as a background process so the script exits.
-Would it make sense to put some of this code into functions?
-Continue checks for contents of arguments, if possible. checkArgument(argument, expected, error_message)
 '''
 
 # Setup the command line arguments
@@ -22,18 +20,24 @@ parser.add_argument("-c", "--taf_clusterId", help="The taf cluster Id to use at 
 parser.add_argument("--skip_tests", help="Skip the execution of the tests & generation of the allure report", action="store_true")
 args = parser.parse_args()
 
+# argument contents checking function
+def check_argument_contents(condition, error_message):
+    if condition != True:
+        print error_message
+        sys.exit()
+    
+
 # populate mvn argument list
 mvn_args_list = ["mvn", "clean", "install"]
 if args.suites:
-    if args.suites[-4:] != ".xml":
-        print "Suites argument did not end in .xml, was: "+str(args.suites)
-        sys.exit()
+    check_argument_contents(args.suites[-4:] == ".xml", "suites argument did not end in .xml, was: "+str(args.suites))
     suites = "-Dsuites="+args.suites
     mvn_args_list.append(suites)
 if args.taf_profiles:
     taf_profiles = "-Dtaf.profiles="+args.taf_profiles
     mvn_args_list.append(taf_profiles)
 if args.taf_clusterId:
+    check_argument_contents(type(args.taf_clusterId) == int, "taf.clusterId argument is not a number, was: "+str(args.taf_clusterId))
     taf_clusterId = "-Dtaf.clusterId="+args.taf_clusterId
     mvn_args_list.append(taf_clusterId)
 if args.skip_tests:
