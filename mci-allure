@@ -22,7 +22,7 @@ args = parser.parse_args()
 
 # argument contents checking function
 def check_argument_contents(condition, error_message):
-    if condition != True:
+    if condition == True:
         print error_message
         sys.exit()
     
@@ -30,14 +30,14 @@ def check_argument_contents(condition, error_message):
 # populate mvn argument list
 mvn_args_list = ["mvn", "clean", "install"]
 if args.suites:
-    check_argument_contents(args.suites[-4:] == ".xml", "suites argument did not end in .xml, was: "+str(args.suites))
+    check_argument_contents(args.suites[-4:] != ".xml", "suites argument did not end in .xml, was: "+str(args.suites))
     suites = "-Dsuites="+args.suites
     mvn_args_list.append(suites)
 if args.taf_profiles:
     taf_profiles = "-Dtaf.profiles="+args.taf_profiles
     mvn_args_list.append(taf_profiles)
 if args.taf_clusterId:
-    check_argument_contents(type(args.taf_clusterId) == int, "taf.clusterId argument is not a number, was: "+str(args.taf_clusterId))
+    check_argument_contents(type(args.taf_clusterId) != int, "taf.clusterId argument is not a number, was: "+str(args.taf_clusterId))
     taf_clusterId = "-Dtaf.clusterId="+args.taf_clusterId
     mvn_args_list.append(taf_clusterId)
 if args.skip_tests:
