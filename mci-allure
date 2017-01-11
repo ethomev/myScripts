@@ -10,6 +10,10 @@ I'm lazy and don't like typing the same group of commands repeatedly so I wrote 
 TODO:
 Run the script through pyton static analysis checks.
 Run the 'allure report open' command as a background process so the script exits.
+Is there a better way to check if taf_clusterId is a number?
+Add argument to allow naming of console log
+Add timestamp to console log name
+Add optional catch all argument
 '''
 
 # Setup the command line arguments
@@ -38,7 +42,7 @@ if args.taf_profiles:
     taf_profiles = "-Dtaf.profiles="+args.taf_profiles
     mvn_args_list.append(taf_profiles)
 if args.taf_clusterId:
-    check_argument_contents(type(args.taf_clusterId) != int, "taf.clusterId argument is not a number, was: "+str(args.taf_clusterId))
+    check_argument_contents(type(int(args.taf_clusterId)) != int, "taf.clusterId argument is not a number, was: "+str(args.taf_clusterId))
     taf_clusterId = "-Dtaf.clusterId="+args.taf_clusterId
     mvn_args_list.append(taf_clusterId)
 if args.skip_tests:
