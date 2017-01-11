@@ -17,6 +17,7 @@ parser = argparse.ArgumentParser(description='Build the project, execute the tes
 parser.add_argument("-s", "--suites", help="The suite(s) to execute, all suites will be executed if this is left blank")
 parser.add_argument("-p", "--taf_profiles", help="The taf profile(s) to use at runtime.")
 parser.add_argument("-c", "--taf_clusterId", help="The taf cluster Id to use at runtime.")
+parser.add_argument("-m", "--maven_profiles", help="The maven profile(s) to use at runtime.")
 parser.add_argument("--skip_tests", help="Skip the execution of the tests & generation of the allure report", action="store_true")
 args = parser.parse_args()
 
@@ -42,6 +43,8 @@ if args.taf_clusterId:
     mvn_args_list.append(taf_clusterId)
 if args.skip_tests:
     mvn_args_list.append("-DskipTests")
+if args.maven_profiles:
+    mvn_args_list.append("-P"+str(args.maven_profiles))
 
 # execute mvn clean install with variables
 mvn = subprocess.Popen(mvn_args_list, stdout=subprocess.PIPE)
