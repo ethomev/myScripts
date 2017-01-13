@@ -47,7 +47,7 @@ def check_argument_contents(condition, error_message):
 # populate mvn argument list
 mvn_args_list = ["mvn", "clean", "install"]
 if args.suites:
-    check_argument_contents(args.suites[-4:] is not ".xml",
+    check_argument_contents(".xml" not in args.suites,
                             "suites argument did not end in .xml, was: " + str(
                                 args.suites))
     suites = "-Dsuites=" + args.suites
