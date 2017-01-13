@@ -5,62 +5,77 @@ import sys
 
 '''
 This is my convenience script for building test projects & executing the tests.
-I'm lazy and don't like typing the same group of commands repeatedly so I wrote this script.
+I'm lazy and don't like typing the same group of commands repeatedly so I
+wrote this script.
 
 TODO:
-Run the script through pyton static analysis checks.
-Run the 'allure report open' command as a background process so the script exits.
-Is there a better way to check if taf_clusterId is a number?
+Run the 'allure report open' command in the background so the script exits.
+    Create a completely separate process. subprocess there is a link to parent
+    and parent won't finish until child finishes
 Add argument to allow naming of console log
 Add timestamp to console log name
 Add optional catch all argument
 '''
 
 # Setup the command line arguments
-parser = argparse.ArgumentParser(description='Build the project, execute the tests & generate the allure report.')
-parser.add_argument("-s", "--suites", help="The suite(s) to execute, all suites will be executed if this is left blank")
-parser.add_argument("-p", "--taf_profiles", help="The taf profile(s) to use at runtime.")
-parser.add_argument("-c", "--taf_clusterId", help="The taf cluster Id to use at runtime.")
-parser.add_argument("-m", "--maven_profiles", help="The maven profile(s) to use at runtime.")
-parser.add_argument("--skip_tests", help="Skip the execution of the tests & generation of the allure report", action="store_true")
+parser = argparse.ArgumentParser(
+    description='Build the project, execute the tests & generate the allure '
+                'report.')
+parser.add_argument("-s", "--suites",
+                    help="The suite(s) to execute, all suites will be "
+                         "executed if this is left blank")
+parser.add_argument("-p", "--taf_profiles",
+                    help="The taf profile(s) to use at runtime.")
+parser.add_argument("-c", "--taf_clusterId",
+                    help="The taf cluster Id to use at runtime.")
+parser.add_argument("-m", "--maven_profiles",
+                    help="The maven profile(s) to use at runtime.")
+parser.add_argument("--skip_tests",
+                    help="Skip the execution of the tests & generation of "
+                         "the allure report",
+                    action="store_true")
 args = parser.parse_args()
+
 
 # argument contents checking function
 def check_argument_contents(condition, error_message):
-    if condition == True:
+    if condition:
         print error_message
         sys.exit()
-    
+
 
 # populate mvn argument list
 mvn_args_list = ["mvn", "clean", "install"]
 if args.suites:
-    check_argument_contents(args.suites[-4:] != ".xml", "suites argument did not end in .xml, was: "+str(args.suites))
-    suites = "-Dsuites="+args.suites
+    check_argument_contents(args.suites[-4:] is not ".xml",
+                            "suites argument did not end in .xml, was: " + str(
+                                args.suites))
+    suites = "-Dsuites=" + args.suites
     mvn_args_list.append(suites)
 if args.taf_profiles:
-    taf_profiles = "-Dtaf.profiles="+args.taf_profiles
+    taf_profiles = "-Dtaf.profiles=" + args.taf_profiles
     mvn_args_list.append(taf_profiles)
 if args.taf_clusterId:
-    check_argument_contents(type(int(args.taf_clusterId)) != int, "taf.clusterId argument is not a number, was: "+str(args.taf_clusterId))
-    taf_clusterId = "-Dtaf.clusterId="+args.taf_clusterId
+    check_argument_contents(args.taf_clusterId.isdigit() is False,
+                            "taf.clusterId argument is not a number, was: "
+                            + str(args.taf_clusterId))
+    taf_clusterId = "-Dtaf.clusterId=" + args.taf_clusterId
     mvn_args_list.append(taf_clusterId)
 if args.skip_tests:
     mvn_args_list.append("-DskipTests")
 if args.maven_profiles:
-    mvn_args_list.append("-P"+str(args.maven_profiles))
+    mvn_args_list.append("-P" + str(args.maven_profiles))
 
 # execute mvn clean install with variables
 mvn = subprocess.Popen(mvn_args_list, stdout=subprocess.PIPE)
 subprocess.call(["tee", "console.log"], stdin=mvn.stdout)
 mvn.wait()
-print "mvn exit code: "+str(mvn.returncode)
-print "mvn args: "+str(mvn_args_list)
+print "mvn exit code: " + str(mvn.returncode)
+print "mvn args: " + str(mvn_args_list)
 # if install was successful generate allure report
-if mvn.returncode == 0 and args.skip_tests == False:
+if mvn.returncode is 0 and args.skip_tests is False:
     print "=== Generating allure report ==="
     subprocess.call(["allure", "generate", "target/allure-results"])
     open_report = subprocess.call(["allure", "report", "open"])
 else:
     print "=== Not generating allure report ==="
-    
