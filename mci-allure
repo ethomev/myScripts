@@ -2,6 +2,9 @@
 import subprocess
 import argparse
 import sys
+import datetime
+
+now = datetime.datetime.now().strftime("%Y-%m-%d:%H:%M")
 
 '''
 This is my convenience script for building test projects & executing the tests.
@@ -33,7 +36,8 @@ parser.add_argument("--skip_tests",
                     help="Skip the execution of the tests & generation of "
                          "the allure report",
                     action="store_true")
-parser.add_argument("--log_name", help="Give the console output log file a specific name, defaults to console.log")
+parser.add_argument("--log_name",
+                    help="Give the console output log file a specific name, defaults to console. No need to specify file extension")
 args = parser.parse_args()
 
 
@@ -67,9 +71,9 @@ if args.skip_tests:
 if args.maven_profiles:
     mvn_args_list.append("-P" + str(args.maven_profiles))
 if args.log_name:
-    tee_args_list.append(args.log_name)
+    tee_args_list.append(args.log_name + now + ".log")
 else:
-    tee_args_list.append("console.log")
+    tee_args_list.append("console" + now + ".log")
 
 # execute mvn clean install with variables
 mvn = subprocess.Popen(mvn_args_list, stdout=subprocess.PIPE)
