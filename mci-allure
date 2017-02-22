@@ -4,8 +4,6 @@ import argparse
 import sys
 import datetime
 
-now = datetime.datetime.now().strftime("%Y-%m-%d:%H:%M")
-
 '''
 This is my convenience script for building test projects & executing the tests.
 I'm lazy and don't like typing the same group of commands repeatedly so I
@@ -15,7 +13,6 @@ TODO:
 Run the 'allure report open' command in the background so the script exits.
     Create a completely separate process. subprocess there is a link to parent
     and parent won't finish until child finishes
-Add timestamp to console log name
 Add optional catch all argument
 '''
 
@@ -71,9 +68,9 @@ if args.skip_tests:
 if args.maven_profiles:
     mvn_args_list.append("-P" + str(args.maven_profiles))
 if args.log_name:
-    tee_args_list.append(args.log_name + now + ".log")
+    tee_args_list.append(args.log_name + ".log")
 else:
-    tee_args_list.append("console" + now + ".log")
+    tee_args_list.append("console.log")
 
 # execute mvn clean install with variables
 mvn = subprocess.Popen(mvn_args_list, stdout=subprocess.PIPE)
