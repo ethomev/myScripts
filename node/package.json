@@ -1,0 +1,25 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "a collection of command line utilities I wrote",
+  "main": "mci-allure.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "mci": "mci-allure.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethomev/myScripts.git"
+  },
+  "author": "Thomas Melville",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ethomev/myScripts/issues"
+  },
+  "homepage": "https://github.com/ethomev/myScripts#readme",
+  "dependencies": {
+    "command-line-args": "4.0.6"
+  }
+}
