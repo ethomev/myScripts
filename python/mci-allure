@@ -14,6 +14,7 @@ Run the 'allure report open' command in the background so the script exits.
     Create a completely separate process. subprocess there is a link to parent
     and parent won't finish until child finishes
 Add optional catch all argument
+    can it accept a string with spaces?
 '''
 
 # Setup the command line arguments
@@ -35,6 +36,7 @@ parser.add_argument("--skip_tests",
                     action="store_true")
 parser.add_argument("--log_name",
                     help="Give the console output log file a specific name, defaults to console. No need to specify file extension")
+parser.add_argument("-g", "--general", help="catch all argument which you can put any text in")
 args = parser.parse_args()
 
 
@@ -71,6 +73,8 @@ if args.log_name:
     tee_args_list.append(args.log_name + ".log")
 else:
     tee_args_list.append("console.log")
+if args.general:
+    mvn_args_list.append(args.general)
 
 # execute mvn clean install with variables
 mvn = subprocess.Popen(mvn_args_list, stdout=subprocess.PIPE)
