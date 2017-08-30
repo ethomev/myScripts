@@ -5,7 +5,7 @@ This script does the following:
     clears the view "old_Jobs"
     searches through all the jobs and adds any jos which haven't been executed in the last 90 days to a new view
 
-You can change the number of days by change the value of ther day variable
+You can change the number of days by changng the value of the day variable
 */
 day=90
 hour=24;
